@@ -1,375 +1,145 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Ronit 💌</title>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine?</title>
+
 <style>
-  :root{
-    --pink:#ff2e7a;
-    --pink2:#ff7db8;
-    --bg1:#fff1f7;
-    --bg2:#ffe1ee;
-    --ink:#1d1d1d;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; display:grid; place-items:center;
-    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background: radial-gradient(circle at top, var(--bg1), var(--bg2));
-    overflow:hidden; color:var(--ink);
-  }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #ff9a9e, #fad0c4);
+    color: #fff;
+}
 
-  /* floating hearts */
-  .hearts{position:fixed; inset:0; pointer-events:none; overflow:hidden;}
-  .heart{position:absolute; bottom:-40px; opacity:.75; animation: floatUp linear infinite;
-    filter: drop-shadow(0 10px 18px rgba(255,46,122,.18));}
-  @keyframes floatUp{
-    from{transform:translateY(0) translateX(0) rotate(0deg)}
-    to{transform:translateY(-120vh) translateX(40px) rotate(25deg)}
-  }
+.container {
+    margin-top: 100px;
+}
 
-  .wrap{
-    width:min(720px, 92vw);
-    display:grid;
-    gap:14px;
-    place-items:center;
-    padding:20px 0;
-  }
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-  .title{
-    text-align:center;
-    font-weight:900;
-    color:var(--pink);
-    font-size:28px;
-    letter-spacing:.2px;
-  }
-  .subtitle{
-    text-align:center;
-    margin-top:-6px;
-    opacity:.85;
-    font-weight:600;
-  }
-  .badgeRow{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  .badge{
-    padding:7px 12px;
-    border-radius:999px;
-    font-weight:800;
-    font-size:13px;
-    color:var(--pink);
-    background: rgba(255,46,122,.10);
-    border:1px solid rgba(255,46,122,.18);
-    backdrop-filter: blur(6px);
-  }
+.yes { background-color: #ff4d6d; color: white; }
+.no { background-color: white; color: #ff4d6d; }
 
-  /* Envelope scene */
-  .scene{
-    width:min(520px, 92vw);
-    height:360px;
-    position:relative;
-    display:grid;
-    place-items:center;
-  }
+button:hover {
+    transform: scale(1.1);
+}
 
-  .envelope{
-    width:360px;
-    height:230px;
-    position:relative;
-    transform: translateY(8px);
-    cursor:pointer;
-  }
+.hidden { display: none; }
 
-  /* Envelope base */
-  .env-base{
-    position:absolute; inset:0;
-    background: rgba(255,255,255,.75);
-    border:1px solid rgba(255,46,122,.18);
-    border-radius:20px;
-    box-shadow: 0 28px 80px rgba(255,46,122,.18);
-    overflow:hidden;
-  }
+.envelope {
+    font-size: 80px;
+    cursor: pointer;
+}
 
-  /* Envelope paper peek */
-  .paper{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    top:18px;
-    width:300px;
-    height:190px;
+.letter {
     background: white;
-    border-radius:14px;
-    border:1px solid rgba(0,0,0,.06);
-    box-shadow: 0 16px 45px rgba(0,0,0,.12);
-    padding:14px;
-    opacity:0;
-    transform-origin: bottom;
-  }
+    color: #333;
+    width: 70%;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-  /* Flap */
-  .flap{
-    position:absolute;
-    left:0; top:0; right:0;
-    height:55%;
-    background: linear-gradient(135deg, rgba(255,46,122,.20), rgba(255,125,184,.12));
-    border-bottom:1px solid rgba(255,46,122,.12);
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-    transform-origin: top;
-    transition: transform .7s cubic-bezier(.2,.8,.2,1);
-  }
-
-  /* little seal */
-  .seal{
-    position:absolute;
-    left:50%; top:56%;
-    transform:translate(-50%,-50%);
-    width:58px; height:58px;
-    border-radius:50%;
-    background: linear-gradient(135deg, var(--pink), var(--pink2));
-    box-shadow: 0 18px 45px rgba(255,46,122,.25);
-    display:grid; place-items:center;
-    color:white;
-    font-size:24px;
-    font-weight:900;
-    transition: transform .25s ease;
-  }
-  .envelope:hover .seal{ transform: translate(-50%,-50%) scale(1.04); }
-
-  .hint{
-    position:absolute;
-    bottom:0;
-    transform: translateY(14px);
-    opacity:.8;
-    font-weight:700;
-    font-size:13px;
-  }
-
-  /* opened state */
-  .opened .flap{ transform: rotateX(180deg); }
-  .opened .paper{
-    opacity:1;
-    animation: slideUp .9s cubic-bezier(.2,.8,.2,1) forwards;
-  }
-  @keyframes slideUp{
-    from{ transform: translateX(-50%) translateY(40px) scale(.98); }
-    to{ transform: translateX(-50%) translateY(-80px) scale(1); }
-  }
-
-  .paper img{
-    width:100%;
-    max-height:140px;
-    object-fit:cover;
-    border-radius:12px;
-    border:2px solid rgba(255,46,122,.12);
-    margin-bottom:10px;
-  }
-
-  .paper h2{
-    margin:0 0 6px;
-    color:var(--pink);
-    font-size:18px;
-  }
-  .type{
-    margin:0;
-    font-weight:700;
-    line-height:1.35;
-    min-height:48px;
-  }
-
-  .btns{
-    display:flex;
-    gap:12px;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-top:10px;
-  }
-  button{
-    border:0;
-    border-radius:999px;
-    padding:12px 18px;
-    font-weight:900;
-    font-size:16px;
-    cursor:pointer;
-    transition: transform .12s ease, filter .12s ease;
-  }
-  #yes{
-    background: linear-gradient(135deg, var(--pink), var(--pink2));
-    color:white;
-    box-shadow: 0 14px 35px rgba(255,46,122,.22);
-  }
-  #yes:hover{ transform: translateY(-1px); filter:brightness(1.03); }
-
-  #no{
-    background:white;
-    color:var(--pink);
-    border:2px solid var(--pink);
-    position:relative;
-  }
-
-  .result{
-    text-align:center;
-    font-weight:900;
-    color:var(--pink);
-    min-height:28px;
-    margin-top:10px;
-    font-size:18px;
-  }
-
-  canvas{position:fixed; inset:0; pointer-events:none;}
+img {
+    width: 200px;
+    margin: 10px;
+    border-radius: 10px;
+}
 </style>
 </head>
+
 <body>
-  <div class="hearts" id="hearts"></div>
 
-  <div class="wrap">
-    <div class="badgeRow">
-      <div class="badge">For Ronit 💌</div>
-      <div class="badge">From Manvitha 💖</div>
+<div class="container" id="question">
+    <h1>Will You Be My Valentine? 💕</h1>
+    <button class="yes" onclick="showEnvelope()">Yes</button>
+    <button class="no" onclick="noClick()">No</button>
+</div>
+
+<div class="container hidden" id="sure">
+    <h2>Are you sureeee? 🥺</h2>
+    <button class="yes" onclick="showEnvelope()">Okay fine, Yes</button>
+    <button class="no" onclick="forceYes()">No</button>
+</div>
+
+<div class="container hidden" id="finalYes">
+    <h2>Error 404: ‘No’ is not a valid option 😌</h2>
+    <button class="yes" onclick="showEnvelope()">For Sure 💖</button>
+</div>
+
+<div class="container hidden" id="envelopePage">
+    <h2>You’ve unlocked something special… 💌</h2>
+    <div class="envelope" onclick="openLetter()">✉️</div>
+</div>
+
+<div class="container hidden" id="letterPage">
+    <div class="letter">
+        <h2>Since September 13th, 2025…</h2>
+        <p>
+        That day changed something in my life in the most beautiful way.<br><br>
+
+        You didn’t just come into my life — you stayed.<br>
+        Through everything.<br>
+        You made me realize I can be happy in love too.<br><br>
+
+        You showed me what love actually is.<br><br>
+
+        I found my best friend to gossip with.<br>
+        My boyfriend to fall in love with.<br>
+        And the husband I want to build a life with — all in you.<br><br>
+
+        I want to live, laugh, grow, and grow old with you.<br><br>
+
+        I love you so much.<br><br>
+
+        And I will stop loving you only when…<br>
+        Tom hates Jerry.<br>
+        When a battery hits 101%.<br>
+        And when February 30th exists.<br><br>
+
+        So basically… never. ❤️
+        </p>
+
+        <img src="photo1.jpg" alt="Our Photo">
+        <img src="photo2.jpg.jpeg" alt="Our Photo">
     </div>
-    <div class="title">A tiny surprise…</div>
-    <div class="subtitle">Tap the envelope ✨</div>
-
-    <div class="scene">
-      <div class="envelope" id="envelope" role="button" aria-label="Open letter">
-        <div class="env-base"></div>
-        <div class="flap"></div>
-        <div class="seal">💗</div>
-
-        <div class="paper" id="paper">
-          <img src="photo.jpg" alt="Manvitha & Ronit">
-          <h2>Ronit 🥰</h2>
-          <p class="type" id="type"></p>
-
-          <div class="btns">
-            <button id="yes">Yes 💖</button>
-            <button id="no">No 🙈</button>
-          </div>
-          <div class="result" id="result"></div>
-        </div>
-      </div>
-      <div class="hint">Open it to read your letter 💌</div>
-    </div>
-  </div>
-
-  <canvas id="confetti"></canvas>
+</div>
 
 <script>
-  // Hearts
-  const hearts = document.getElementById("hearts");
-  const heartEmojis = ["💗","💖","💘","💞","💕","💓"];
-  for(let i=0;i<26;i++){
-    const h = document.createElement("div");
-    h.className="heart";
-    h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
-    h.style.left = (Math.random()*100)+"vw";
-    h.style.fontSize = (14 + Math.random()*20)+"px";
-    h.style.animationDuration = (6 + Math.random()*9)+"s";
-    h.style.animationDelay = (Math.random()*6)+"s";
-    hearts.appendChild(h);
-  }
+let noCount = 0;
 
-  const envelope = document.getElementById("envelope");
-  const paper = document.getElementById("paper");
-  const typeEl = document.getElementById("type");
-  const yes = document.getElementById("yes");
-  const no = document.getElementById("no");
-  const result = document.getElementById("result");
+function noClick() {
+    document.getElementById("question").classList.add("hidden");
+    document.getElementById("sure").classList.remove("hidden");
+}
 
-  const letterText =
-    "I just wanted to tell you… you make my days happier. " +
-    "So I’m asking properly 😌✨ Will you be my Valentine?";
+function forceYes() {
+    document.getElementById("sure").classList.add("hidden");
+    document.getElementById("finalYes").classList.remove("hidden");
+}
 
-  let opened = false;
-  let typing = false;
+function showEnvelope() {
+    document.getElementById("question").classList.add("hidden");
+    document.getElementById("sure").classList.add("hidden");
+    document.getElementById("finalYes").classList.add("hidden");
+    document.getElementById("envelopePage").classList.remove("hidden");
+}
 
-  envelope.addEventListener("click", () => {
-    if(opened) return;
-    opened = true;
-    envelope.classList.add("opened");
-    setTimeout(() => startTypewriter(letterText, 22), 450);
-  });
-
-  function startTypewriter(text, speed){
-    if(typing) return;
-    typing = true;
-    let i = 0;
-    typeEl.textContent = "";
-    const timer = setInterval(() => {
-      typeEl.textContent += text[i] || "";
-      i++;
-      if(i >= text.length){
-        clearInterval(timer);
-        typing = false;
-      }
-    }, speed);
-  }
-
-  // NO button runs away (IG style)
-  function moveNo(){
-    const box = paper.getBoundingClientRect();
-    const btn = no.getBoundingClientRect();
-    const pad = 10;
-
-    const maxX = box.width - btn.width - pad*2;
-    const maxY = 70;
-
-    const x = pad + Math.random()*Math.max(0, maxX);
-    const y = (box.height - 92) + Math.random()*Math.max(0, maxY);
-
-    no.style.position = "absolute";
-    no.style.left = x + "px";
-    no.style.top  = y + "px";
-  }
-  no.addEventListener("mouseenter", moveNo);
-  no.addEventListener("click", (e)=>{ e.preventDefault(); moveNo(); });
-
-  yes.addEventListener("click", () => {
-    result.textContent = "YAYYYY 💞 Ronit is officially Manvitha’s Valentine 🥰✨";
-    yes.disabled = true; no.disabled = true;
-    popConfetti();
-  });
-
-  // Confetti
-  function popConfetti(){
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = innerWidth * dpr;
-    canvas.height = innerHeight * dpr;
-    canvas.style.width = innerWidth + "px";
-    canvas.style.height = innerHeight + "px";
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-
-    const pieces = Array.from({length: 180}, () => ({
-      x: Math.random()*innerWidth,
-      y: -30 - Math.random()*200,
-      w: 5 + Math.random()*7,
-      h: 5 + Math.random()*7,
-      vx: -2.5 + Math.random()*5,
-      vy: 2 + Math.random()*6,
-      r: Math.random()*Math.PI,
-      vr: -0.12 + Math.random()*0.24
-    }));
-
-    let t = 0;
-    (function anim(){
-      t++;
-      ctx.clearRect(0,0,innerWidth,innerHeight);
-      for(const p of pieces){
-        p.x += p.vx;
-        p.y += p.vy + 0.02*t;
-        p.r += p.vr;
-        ctx.save();
-        ctx.translate(p.x,p.y);
-        ctx.rotate(p.r);
-        ctx.fillStyle = `hsl(${Math.random()*360},85%,65%)`;
-        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-        ctx.restore();
-      }
-      if(t < 150) requestAnimationFrame(anim);
-      else ctx.clearRect(0,0,innerWidth,innerHeight);
-    })();
-  }
+function openLetter() {
+    document.getElementById("envelopePage").classList.add("hidden");
+    document.getElementById("letterPage").classList.remove("hidden");
+}
 </script>
+
 </body>
 </html>
