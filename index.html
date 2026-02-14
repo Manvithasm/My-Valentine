@@ -5,89 +5,288 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ronit 💖</title>
   <style>
+    :root{
+      --pink:#ff2e7a;
+      --pink2:#ff77b2;
+      --bg1:#fff1f7;
+      --bg2:#ffe1ee;
+      --ink:#1f1f1f;
+    }
+    *{box-sizing:border-box}
     body{
-      margin:0; min-height:100vh; display:grid; place-items:center;
-      background: linear-gradient(135deg,#ffe6f0,#ffd1e6);
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      text-align:center;
+      color:var(--ink);
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      overflow:hidden;
     }
+
+    /* floating hearts */
+    .hearts{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .heart{
+      position:absolute;
+      bottom:-40px;
+      font-size:18px;
+      opacity:.75;
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 6px 10px rgba(255,46,122,.18));
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) translateX(0) rotate(0deg); }
+      to{ transform: translateY(-120vh) translateX(30px) rotate(20deg); }
+    }
+
     .card{
-      width:min(520px, 92vw);
-      background: rgba(255,255,255,.85);
-      border-radius:24px;
-      padding:26px 20px;
-      box-shadow:0 18px 45px rgba(255,105,180,.25);
+      width:min(560px, 92vw);
+      background: rgba(255,255,255,.82);
       border:1px solid rgba(255,46,122,.18);
+      border-radius:26px;
+      padding:26px 20px 22px;
+      box-shadow: 0 22px 70px rgba(255, 46, 122, .18);
+      backdrop-filter: blur(8px);
+      position:relative;
     }
-    h1{ color:#ff2e7a; margin:8px 0 6px; font-size:28px; }
-    p{ margin:0 0 14px; color:#333; opacity:.9; }
+
+    .top{
+      display:flex; gap:14px; align-items:center; justify-content:center;
+      margin-bottom:6px;
+    }
+    .badge{
+      background: rgba(255,46,122,.10);
+      border:1px solid rgba(255,46,122,.18);
+      color:var(--pink);
+      font-weight:800;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+    }
+    h1{
+      margin:10px 0 6px;
+      font-size:30px;
+      letter-spacing:.2px;
+      color:var(--pink);
+    }
+    p{ margin:0; opacity:.9; }
+    .sub{ margin-top:8px; font-size:15px; }
+
     .photo{
       width:100%;
-      max-width:300px;
-      border-radius:18px;
-      margin:10px auto 14px;
+      max-width:320px;
       display:block;
-      box-shadow:0 12px 30px rgba(255,105,180,.28);
-      border:3px solid rgba(255,46,122,.15);
+      margin:16px auto 14px;
+      border-radius:18px;
+      box-shadow:0 16px 40px rgba(255,105,180,.25);
+      border:3px solid rgba(255,46,122,.14);
     }
-    .btns{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+
+    .question{
+      margin:10px 0 16px;
+      font-size:20px;
+      font-weight:900;
+      color:#222;
+    }
+
+    .btns{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
     button{
+      border:0;
+      border-radius:999px;
       padding:12px 18px;
-      border:none; border-radius:999px;
-      font-weight:800; font-size:16px;
+      font-weight:900;
+      font-size:16px;
       cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
     }
-    #yes{ background:#ff2e7a; color:#fff; }
-    #no{ background:#fff; color:#ff2e7a; border:2px solid #ff2e7a; }
-    #msg{ margin-top:14px; font-size:18px; font-weight:900; color:#ff2e7a; min-height:26px; }
-    .tiny{ margin-top:14px; font-size:12.5px; opacity:.7; }
+    #yes{
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      color:white;
+      box-shadow: 0 14px 30px rgba(255,46,122,.25);
+    }
+    #yes:hover{ filter:brightness(1.03); transform: translateY(-1px); }
+
+    #no{
+      background: rgba(255,255,255,.85);
+      color: var(--pink);
+      border:2px solid var(--pink);
+      position:relative;
+    }
+
+    .msg{
+      margin-top:14px;
+      min-height:30px;
+      font-size:18px;
+      font-weight:900;
+      color:var(--pink);
+      text-align:center;
+    }
+
+    .reveal{
+      display:none;
+      margin-top:14px;
+      padding:14px 14px 12px;
+      border-radius:18px;
+      border:1px solid rgba(255,46,122,.18);
+      background: rgba(255,46,122,.06);
+      line-height:1.45;
+    }
+    .reveal h2{
+      margin:0 0 6px;
+      font-size:18px;
+      color:var(--pink);
+    }
+    .tiny{ margin-top:12px; font-size:12.5px; opacity:.7; text-align:center; }
+
+    canvas.confetti{ position:fixed; inset:0; pointer-events:none; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Ronit 💌</h1>
-    <p>From Manvitha 💖</p>
 
-    <!-- Put your couple photo in the same folder as this file -->
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card">
+    <div class="top">
+      <div class="badge">For Ronit 💌</div>
+      <div class="badge">From Manvitha 💖</div>
+    </div>
+
+    <h1>Hi Ronit 🥰</h1>
+    <p class="sub">I made a tiny little page just for you…</p>
+
+    <!-- Change photo name if needed -->
     <img class="photo" src="photo.jpg" alt="Manvitha & Ronit">
 
-    <p>I have a tiny question for you…</p>
-    <h2 style="margin:0 0 16px; color:#222;">Will you be my Valentine? 💘</h2>
+    <div class="question">Will you be my Valentine? 💘</div>
 
     <div class="btns">
       <button id="yes">Yes 💖</button>
       <button id="no">No 🙈</button>
     </div>
 
-    <div id="msg"></div>
-    <div class="tiny">Tip: open on phone for extra cuteness ✨</div>
+    <div class="msg" id="msg"></div>
+
+    <div class="reveal" id="reveal">
+      <h2>My little love note 💗</h2>
+      <div>
+        Ronit, you make my ordinary days feel special.  
+        If you say yes, you owe me one hug, one selfie, and one date…  
+        and I promise to keep choosing you. 🥹✨
+      </div>
+      <div style="margin-top:8px; font-weight:900; color:#222;">
+        Happy Valentine’s Day, my favourite person 💞
+      </div>
+    </div>
+
+    <div class="tiny">Tip: Try clicking “No” 😏</div>
   </div>
 
+  <canvas class="confetti" id="confetti"></canvas>
+
   <script>
+    // Floating hearts generator
+    const hearts = document.getElementById("hearts");
+    const heartEmojis = ["💗","💖","💘","💞","💕","💓"];
+    for(let i=0;i<22;i++){
+      const s = document.createElement("div");
+      s.className = "heart";
+      s.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+      const left = Math.random()*100;
+      const dur = 6 + Math.random()*8;
+      const delay = Math.random()*6;
+      const size = 14 + Math.random()*18;
+      s.style.left = left + "vw";
+      s.style.animationDuration = dur + "s";
+      s.style.animationDelay = delay + "s";
+      s.style.fontSize = size + "px";
+      hearts.appendChild(s);
+    }
+
     const yes = document.getElementById("yes");
     const no = document.getElementById("no");
     const msg = document.getElementById("msg");
+    const reveal = document.getElementById("reveal");
 
-    let n = 0;
-    const noTexts = [
-      "Are you sure? 🥺",
-      "Think again, Ronit 😏",
-      "Don’t break Manvitha’s heart 💔",
-      "Last chance mister 😤",
-      "Okay okay… press YES 😌"
-    ];
+    // Make NO button run away on hover/tap
+    function moveNo(){
+      const card = document.querySelector(".card").getBoundingClientRect();
+      const btn = no.getBoundingClientRect();
+      const padding = 12;
 
-    no.addEventListener("click", () => {
-      n++;
-      no.textContent = noTexts[Math.min(n, noTexts.length - 1)];
-      yes.style.transform = `scale(${1 + Math.min(n * 0.18, 1.2)})`;
-    });
+      const maxX = card.width - btn.width - padding*2;
+      const maxY = 120; // keep it near buttons area
 
-    yes.addEventListener("click", () => {
+      const x = padding + Math.random()*Math.max(0, maxX);
+      const y = padding + Math.random()*Math.max(0, maxY);
+
+      no.style.position = "absolute";
+      no.style.left = x + "px";
+      no.style.top  = (card.height - 160 + y) + "px";
+    }
+
+    // desktop hover
+    no.addEventListener("mouseenter", moveNo);
+    // mobile tap
+    no.addEventListener("click", (e)=>{ e.preventDefault(); moveNo(); });
+
+    // YES click
+    yes.addEventListener("click", ()=>{
       msg.textContent = "YAYYYY 💞 Ronit is officially Manvitha’s Valentine 🥰✨";
+      reveal.style.display = "block";
       yes.disabled = true;
       no.disabled = true;
+      popConfetti();
     });
+
+    // Confetti
+    function popConfetti(){
+      const canvas = document.getElementById("confetti");
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = innerWidth * dpr;
+      canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + "px";
+      canvas.style.height = innerHeight + "px";
+      ctx.scale(dpr, dpr);
+
+      const pieces = Array.from({length: 170}, () => ({
+        x: Math.random() * innerWidth,
+        y: -30 - Math.random()*200,
+        w: 6 + Math.random()*6,
+        h: 6 + Math.random()*6,
+        vx: -2.5 + Math.random()*5,
+        vy: 2 + Math.random()*6,
+        r: Math.random()*Math.PI,
+        vr: -0.12 + Math.random()*0.24
+      }));
+
+      let t = 0;
+      (function anim(){
+        t++;
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+        pieces.forEach(p=>{
+          p.x += p.vx;
+          p.y += p.vy + 0.02*t;
+          p.r += p.vr;
+
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate(p.r);
+          ctx.fillStyle = `hsl(${Math.random()*360}, 85%, 65%)`;
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+        });
+        if(t < 150) requestAnimationFrame(anim);
+        else ctx.clearRect(0,0,innerWidth,innerHeight);
+      })();
+    }
   </script>
 </body>
 </html>
