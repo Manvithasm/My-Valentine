@@ -1,145 +1,446 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Will You Be My Valentine?</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For You 💌</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: linear-gradient(to right, #ff9a9e, #fad0c4);
-    color: #fff;
-}
+  <style>
+    :root{
+      --bg1:#ffd1dc;
+      --bg2:#ffe7ef;
+      --card:#ffffff;
+      --pink:#ff4d6d;
+      --pink2:#ff7aa2;
+      --text:#2b2b2b;
+      --shadow: 0 18px 45px rgba(0,0,0,.15);
+    }
 
-.container {
-    margin-top: 100px;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at 20% 20%, var(--bg2), transparent 50%),
+                  radial-gradient(circle at 80% 10%, #fff, transparent 45%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
 
-button {
-    padding: 12px 25px;
-    font-size: 18px;
-    margin: 10px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+    .wrap{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
 
-.yes { background-color: #ff4d6d; color: white; }
-.no { background-color: white; color: #ff4d6d; }
+    .panel{
+      width:min(820px, 95vw);
+      background: rgba(255,255,255,.35);
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      position:relative;
+    }
 
-button:hover {
-    transform: scale(1.1);
-}
+    .topchips{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .chip{
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.7);
+      font-weight:600;
+    }
 
-.hidden { display: none; }
+    h1{
+      margin:10px 0 6px;
+      text-align:center;
+      font-size: clamp(28px, 4vw, 44px);
+      color: #d81b60;
+      letter-spacing:.2px;
+    }
+    p.sub{
+      margin:0 0 18px;
+      text-align:center;
+      font-size: clamp(14px, 2.2vw, 18px);
+      opacity:.9;
+    }
 
-.envelope {
-    font-size: 80px;
-    cursor: pointer;
-}
+    .card{
+      margin: 14px auto 0;
+      width:min(640px, 95%);
+      background: var(--card);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      position:relative;
+      text-align:left;
+    }
 
-.letter {
-    background: white;
-    color: #333;
-    width: 70%;
-    margin: auto;
-    padding: 20px;
-    border-radius: 10px;
-}
+    .card .title{
+      font-weight:800;
+      color:#d81b60;
+      font-size: 20px;
+      margin: 0 0 10px;
+    }
+    .card .msg{
+      margin:0;
+      font-size: 18px;
+      line-height: 1.5;
+      font-weight:600;
+    }
 
-img {
-    width: 200px;
-    margin: 10px;
-    border-radius: 10px;
-}
-</style>
+    .btnrow{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:0;
+      border-radius:999px;
+      padding: 13px 22px;
+      font-size: 17px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,.15);
+    }
+    button:active{ transform: scale(.98); }
+    .yes{ background: linear-gradient(135deg, var(--pink), var(--pink2)); color:#fff; }
+    .no{ background: #fff; color: var(--pink); border: 2px solid rgba(255,77,109,.35); }
+
+    .hint{
+      margin-top:18px;
+      text-align:center;
+      font-weight:700;
+      opacity:.9;
+    }
+
+    /* Screens */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Envelope */
+    .envelopeBox{
+      display:grid;
+      place-items:center;
+      padding: 6px 0 14px;
+    }
+    .envelope{
+      width: 220px;
+      height: 150px;
+      position:relative;
+      cursor:pointer;
+      transform: translateY(0);
+      transition: transform .15s ease;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,.18));
+    }
+    .envelope:hover{ transform: translateY(-3px); }
+    .env-back{
+      position:absolute; inset:0;
+      background:#fff;
+      border-radius: 16px;
+      border: 2px solid rgba(255,77,109,.25);
+    }
+    .env-front{
+      position:absolute; inset:0;
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .env-front:before{
+      content:"";
+      position:absolute; left:0; right:0; bottom:0;
+      height: 58%;
+      background: linear-gradient(135deg, rgba(255,77,109,.35), rgba(255,122,162,.35));
+      border-top: 2px solid rgba(255,77,109,.22);
+    }
+    .env-front:after{
+      content:"";
+      position:absolute; left:0; right:0; top:0;
+      margin:auto;
+      width:0; height:0;
+      border-left: 110px solid transparent;
+      border-right: 110px solid transparent;
+      border-top: 80px solid rgba(255,77,109,.25);
+      transform: translateY(-2px);
+    }
+    .tap{
+      margin-top: 14px;
+      font-weight:800;
+      color:#b0154f;
+      text-align:center;
+    }
+
+    /* Letter */
+    .letter{
+      width:min(720px, 96%);
+      margin: 16px auto 0;
+      background:#fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.16);
+
+      /* IMPORTANT so it never cuts */
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .letter h2{
+      margin:0 0 10px;
+      color:#d81b60;
+    }
+    .letter p{
+      margin: 0 0 14px;
+      line-height: 1.65;
+      font-size: 16.5px;
+    }
+    .photos{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top: 10px;
+    }
+    .photos img{
+      width: 210px;
+      max-width: 42vw;
+      border-radius: 14px;
+      border: 2px solid rgba(255,77,109,.18);
+      box-shadow: 0 12px 24px rgba(0,0,0,.12);
+      object-fit:cover;
+    }
+
+    /* Floating hearts */
+    .heart{
+      position:fixed;
+      bottom:-30px;
+      font-size: 18px;
+      animation: floatUp linear forwards;
+      opacity:.9;
+      pointer-events:none;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) translateX(0); opacity:.95; }
+      to{ transform: translateY(-110vh) translateX(var(--drift)); opacity:0; }
+    }
+
+    .small{
+      font-size: 13px;
+      opacity:.75;
+      text-align:center;
+      margin-top: 8px;
+    }
+
+    .dangerNote{
+      text-align:center;
+      font-weight:800;
+      color:#b0154f;
+      margin-top:10px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="panel">
 
-<div class="container" id="question">
-    <h1>Will You Be My Valentine? 💕</h1>
-    <button class="yes" onclick="showEnvelope()">Yes</button>
-    <button class="no" onclick="noClick()">No</button>
-</div>
+      <div class="topchips">
+        <div class="chip">For Ronit 💌</div>
+        <div class="chip">From Manvitha 💖</div>
+      </div>
 
-<div class="container hidden" id="sure">
-    <h2>Are you sureeee? 🥺</h2>
-    <button class="yes" onclick="showEnvelope()">Okay fine, Yes</button>
-    <button class="no" onclick="forceYes()">No</button>
-</div>
+      <!-- SCREEN 1 -->
+      <div class="screen active" id="s1">
+        <h1>Will you be my Valentine? 💕</h1>
+        <p class="sub">I have something special for you…</p>
 
-<div class="container hidden" id="finalYes">
-    <h2>Error 404: ‘No’ is not a valid option 😌</h2>
-    <button class="yes" onclick="showEnvelope()">For Sure 💖</button>
-</div>
+        <div class="card">
+          <div class="title">Ronit 🥰</div>
+          <p class="msg">
+            I just wanted to tell you… you make my days happier.
+            So I’m asking properly 😌✨ Will you be my Valentine?
+          </p>
+        </div>
 
-<div class="container hidden" id="envelopePage">
-    <h2>You’ve unlocked something special… 💌</h2>
-    <div class="envelope" onclick="openLetter()">✉️</div>
-</div>
+        <div class="btnrow">
+          <button class="no" id="noBtn">No 🙈</button>
+          <button class="yes" id="yesBtn">Yes 💖</button>
+        </div>
 
-<div class="container hidden" id="letterPage">
-    <div class="letter">
-        <h2>Since September 13th, 2025…</h2>
-        <p>
-        That day changed something in my life in the most beautiful way.<br><br>
+        <div class="hint">Choose carefully 😌</div>
+      </div>
 
-        You didn’t just come into my life — you stayed.<br>
-        Through everything.<br>
-        You made me realize I can be happy in love too.<br><br>
+      <!-- SCREEN 2 -->
+      <div class="screen" id="s2">
+        <h1>Try again… 🥺</h1>
+        <p class="sub">Are you sureeee?</p>
 
-        You showed me what love actually is.<br><br>
+        <div class="btnrow">
+          <button class="no" id="noBtn2">No 🙈</button>
+          <button class="yes" id="yesBtn2">Okay fine, Yes 💖</button>
+        </div>
 
-        I found my best friend to gossip with.<br>
-        My boyfriend to fall in love with.<br>
-        And the husband I want to build a life with — all in you.<br><br>
+        <div class="dangerNote">No option is getting risky 😌</div>
+      </div>
 
-        I want to live, laugh, grow, and grow old with you.<br><br>
+      <!-- SCREEN 3 -->
+      <div class="screen" id="s3">
+        <h1>Hehe… 😌</h1>
+        <p class="sub">Error 404: “No” is not a valid option</p>
 
-        I love you so much.<br><br>
+        <div class="btnrow">
+          <button class="yes" id="yesBtn3">Yes 💖</button>
+          <button class="yes" id="yesBtn4">For Sure 💍</button>
+        </div>
 
-        And I will stop loving you only when…<br>
-        Tom hates Jerry.<br>
-        When a battery hits 101%.<br>
-        And when February 30th exists.<br><br>
+        <div class="small">(Both are correct answers)</div>
+      </div>
 
-        So basically… never. ❤️
-        </p>
+      <!-- SCREEN 4: Envelope -->
+      <div class="screen" id="s4">
+        <h1>A tiny surprise…</h1>
+        <p class="sub">Tap the envelope ✨</p>
 
-        <img src="photo1.jpg" alt="Our Photo">
-        <img src="photo2.jpg.jpeg" alt="Our Photo">
+        <div class="envelopeBox">
+          <div class="envelope" id="envelope">
+            <div class="env-back"></div>
+            <div class="env-front"></div>
+          </div>
+          <div class="tap">Tap to open 💌</div>
+          <div class="small">Open it to read your letter</div>
+        </div>
+      </div>
+
+      <!-- SCREEN 5: Letter -->
+      <div class="screen" id="s5">
+        <h1>💖</h1>
+        <p class="sub">Just for you…</p>
+
+        <div class="letter">
+          <h2>Since September 13th, 2025…</h2>
+
+          <p>
+            That day changed something in my life in the most beautiful way.
+          </p>
+
+          <p>
+            You didn’t just come into my life — you stayed.
+            Through everything. Through my moods, my overthinking, my fears,
+            and my happiest days.
+          </p>
+
+          <p>
+            You made me realize something I didn’t even know I needed —
+            that I can be happy in love too.
+          </p>
+
+          <p>
+            Before you, love was just a word.
+            With you, it became a feeling… a safe place… a home.
+            You are the one who showed me what love actually is.
+          </p>
+
+          <p>
+            I found my best friend to gossip with,
+            my boyfriend to fall in love with every single day,
+            and the husband I want to build a life with — all in you.
+          </p>
+
+          <p>
+            I don’t just want today with you.
+            I want the ordinary days, the silly fights, the inside jokes,
+            the late-night talks… the “remember when” moments when we’re old.
+          </p>
+
+          <p>
+            I want to live with you, laugh with you, grow with you,
+            and grow old with you.
+          </p>
+
+          <p>
+            I love you so much.
+          </p>
+
+          <p>
+            And I will stop loving you only when…<br>
+            Tom hates Jerry.<br>
+            When a battery hits 101%.<br>
+            And when February 30th exists.<br><br>
+            So basically… never. ❤️
+          </p>
+
+          <div class="photos">
+            <!-- Put your photos in same folder and name them exactly -->
+            <img src="photo1.jpg" alt="Our photo 1">
+            <img src="photo2.jpg" alt="Our photo 2">
+          </div>
+
+          <div class="small" style="margin-top:14px;">
+            (Tip: If photos don’t show, rename them to photo1.jpg and photo2.jpg or update the file names here.)
+          </div>
+        </div>
+      </div>
+
     </div>
-</div>
+  </div>
 
-<script>
-let noCount = 0;
+  <script>
+    const s1 = document.getElementById("s1");
+    const s2 = document.getElementById("s2");
+    const s3 = document.getElementById("s3");
+    const s4 = document.getElementById("s4");
+    const s5 = document.getElementById("s5");
 
-function noClick() {
-    document.getElementById("question").classList.add("hidden");
-    document.getElementById("sure").classList.remove("hidden");
-}
+    function show(screen){
+      [s1,s2,s3,s4,s5].forEach(s => s.classList.remove("active"));
+      screen.classList.add("active");
+      burstHearts(10);
+    }
 
-function forceYes() {
-    document.getElementById("sure").classList.add("hidden");
-    document.getElementById("finalYes").classList.remove("hidden");
-}
+    document.getElementById("noBtn").addEventListener("click", () => show(s2));
+    document.getElementById("yesBtn").addEventListener("click", () => show(s4));
 
-function showEnvelope() {
-    document.getElementById("question").classList.add("hidden");
-    document.getElementById("sure").classList.add("hidden");
-    document.getElementById("finalYes").classList.add("hidden");
-    document.getElementById("envelopePage").classList.remove("hidden");
-}
+    document.getElementById("noBtn2").addEventListener("click", () => show(s3));
+    document.getElementById("yesBtn2").addEventListener("click", () => show(s4));
 
-function openLetter() {
-    document.getElementById("envelopePage").classList.add("hidden");
-    document.getElementById("letterPage").classList.remove("hidden");
-}
-</script>
+    document.getElementById("yesBtn3").addEventListener("click", () => show(s4));
+    document.getElementById("yesBtn4").addEventListener("click", () => show(s4));
 
+    document.getElementById("envelope").addEventListener("click", () => show(s5));
+
+    // floating hearts
+    const hearts = ["💖","💘","💕","💗","💓","💞","✨"];
+    function burstHearts(n){
+      for(let i=0;i<n;i++){
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+        const left = Math.random()*100;
+        const dur = 3 + Math.random()*3.5;
+        const drift = (Math.random()*160 - 80).toFixed(0) + "px";
+        h.style.left = left + "vw";
+        h.style.animationDuration = dur + "s";
+        h.style.setProperty("--drift", drift);
+        h.style.fontSize = (16 + Math.random()*18).toFixed(0) + "px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(), (dur*1000)+200);
+      }
+    }
+
+    // small hearts on load
+    burstHearts(12);
+    setInterval(()=>burstHearts(3), 1800);
+  </script>
 </body>
 </html>
