@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ronit 💖</title>
+  <style>
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      background: linear-gradient(135deg,#ffe6f0,#ffd1e6);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align:center;
+    }
+    .card{
+      width:min(520px, 92vw);
+      background: rgba(255,255,255,.85);
+      border-radius:24px;
+      padding:26px 20px;
+      box-shadow:0 18px 45px rgba(255,105,180,.25);
+      border:1px solid rgba(255,46,122,.18);
+    }
+    h1{ color:#ff2e7a; margin:8px 0 6px; font-size:28px; }
+    p{ margin:0 0 14px; color:#333; opacity:.9; }
+    .photo{
+      width:100%;
+      max-width:300px;
+      border-radius:18px;
+      margin:10px auto 14px;
+      display:block;
+      box-shadow:0 12px 30px rgba(255,105,180,.28);
+      border:3px solid rgba(255,46,122,.15);
+    }
+    .btns{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+    button{
+      padding:12px 18px;
+      border:none; border-radius:999px;
+      font-weight:800; font-size:16px;
+      cursor:pointer;
+    }
+    #yes{ background:#ff2e7a; color:#fff; }
+    #no{ background:#fff; color:#ff2e7a; border:2px solid #ff2e7a; }
+    #msg{ margin-top:14px; font-size:18px; font-weight:900; color:#ff2e7a; min-height:26px; }
+    .tiny{ margin-top:14px; font-size:12.5px; opacity:.7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Ronit 💌</h1>
+    <p>From Manvitha 💖</p>
+
+    <!-- Put your couple photo in the same folder as this file -->
+    <img class="photo" src="photo.jpg" alt="Manvitha & Ronit">
+
+    <p>I have a tiny question for you…</p>
+    <h2 style="margin:0 0 16px; color:#222;">Will you be my Valentine? 💘</h2>
+
+    <div class="btns">
+      <button id="yes">Yes 💖</button>
+      <button id="no">No 🙈</button>
+    </div>
+
+    <div id="msg"></div>
+    <div class="tiny">Tip: open on phone for extra cuteness ✨</div>
+  </div>
+
+  <script>
+    const yes = document.getElementById("yes");
+    const no = document.getElementById("no");
+    const msg = document.getElementById("msg");
+
+    let n = 0;
+    const noTexts = [
+      "Are you sure? 🥺",
+      "Think again, Ronit 😏",
+      "Don’t break Manvitha’s heart 💔",
+      "Last chance mister 😤",
+      "Okay okay… press YES 😌"
+    ];
+
+    no.addEventListener("click", () => {
+      n++;
+      no.textContent = noTexts[Math.min(n, noTexts.length - 1)];
+      yes.style.transform = `scale(${1 + Math.min(n * 0.18, 1.2)})`;
+    });
+
+    yes.addEventListener("click", () => {
+      msg.textContent = "YAYYYY 💞 Ronit is officially Manvitha’s Valentine 🥰✨";
+      yes.disabled = true;
+      no.disabled = true;
+    });
+  </script>
+</body>
+</html>
